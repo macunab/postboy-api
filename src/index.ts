@@ -6,6 +6,9 @@ if(dotenvResult.error) {
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import DbConfig from './db/dbConfig';
+
+DbConfig.connectDb(process.env.DB_CNN as string);
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
 const app: Application = express();
