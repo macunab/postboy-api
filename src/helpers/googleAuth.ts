@@ -1,6 +1,6 @@
 import passport from 'passport';
 import userModel from '../models/user.model';
-import passportGoogle from 'passport-google-oauth20';
+import passportGoogle from 'passport-google-oauth2';
 
 class GoogleAuth {
 
@@ -10,8 +10,9 @@ class GoogleAuth {
             done(null, user.id);
         });
         passport.deserializeUser(async(id: string, done) => {
-            const user = await userModel.getUser(id);
-            done(null, {id: user!._id.toString() });
+            console.log(`ID IN DESERIALIZEUSER: ${id}`);
+            const user = await userModel.findOneUser(id);
+            done(null, { id: user!.googleId });
         });
         passport.use('sign-in-google', new GoogleStrategy({
             clientID: process.env.GOOGLE_CLIENT_ID as string,
@@ -22,16 +23,21 @@ class GoogleAuth {
                 try {
                     console.log(profile);
                     // find user by code-interface//id-profile
-                    const user = await userModel.getUser(profile.id);
+                    const user = await userModel.findOneUser(profile.id);
                     if(user) {
-                        return done(null, undefined, 'El usuario no existe');
+                        return done(null, false);
                     } else {
                         //create user and save...
+                        const newUser = await userModel.createUser({
+                            googleId: profile.id,
+                            name: profile.displayName,
+                            email: profile.emails?.[0].value
+                        })
                         done(null, profile);
                     }
                 } catch(err) {
                     console.log(err);
-                    return done(null, undefined, 'Se ha producido un error');
+                    return done(null, false);
                 }
             }));
 

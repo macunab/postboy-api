@@ -1,3 +1,4 @@
+import { Document } from 'mongoose';
 
 export interface User {
     _id?: string,
@@ -6,9 +7,9 @@ export interface User {
     password?: string
 }
 
-export interface UserDocument {
-    _id: string,
-    name: string,
-    email: string,
+export type UserDocument = Document & {
+    name: string;
+    email: string;
+    googleId: string;
     password?: string
 }
