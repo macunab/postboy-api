@@ -31,7 +31,6 @@ class UserModel {
         const newUser = await this.UserDb.create(user);
         return newUser;
     }
-
 }
 
 export default new UserModel();

@@ -6,6 +6,9 @@ class GoogleAuth {
 
     passportConf() {
         const GoogleStrategy = passportGoogle.Strategy;
+        const clientId = process.env.GOOGLE_CLIENT_ID as string;
+        const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
+        console.log(`CLIENTID: ${clientId} || CLIENTESECRET: ${clientSecret}`);
         passport.serializeUser((user, done) => {
             done(null, user.id);
         });
@@ -15,17 +18,16 @@ class GoogleAuth {
             done(null, { id: user!.googleId });
         });
         passport.use('sign-in-google', new GoogleStrategy({
-            clientID: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            clientID: clientId,
+            clientSecret: clientSecret,
             callbackURL: 'http://localhost:4000/auth/google/callback'
         },
             async (accessToken, refreshToken, profile, done) => {
                 try {
                     console.log(profile);
-                    // find user by code-interface//id-profile
                     const user = await userModel.findOneUser(profile.id);
                     if(user) {
-                        return done(null, false);
+                        return done(null, profile);
                     } else {
                         //create user and save...
                         const newUser = await userModel.createUser({
