@@ -1,0 +1,22 @@
+import passport from "passport";
+import passportJwt from 'passport-jwt';
+
+const JWTstrategy = passportJwt.Strategy;
+const extractJWT = passportJwt.ExtractJwt;
+
+class JwtStrategy {
+    verifyJwt() {
+        passport.use(new JWTstrategy({
+            secretOrKey: process.env.JWT_SECRET as string,
+            jwtFromRequest: extractJWT.fromHeader('x-token')
+        }, (token, done) => {
+            try {
+                return done(null, token);
+            } catch(err) {
+                done(err);
+            }
+        }))
+    }
+}
+
+export default new JwtStrategy();

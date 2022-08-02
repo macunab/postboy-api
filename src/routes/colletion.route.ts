@@ -1,5 +1,6 @@
 import { Application } from "express";
 import { check } from "express-validator";
+import passport from "passport";
 import collectionController from "../controllers/collection.controller";
 import { CommonRoutesConfig } from "../helpers/commonRoutesConfig";
 import validationFields from "../middlewares/validationFields";
@@ -20,7 +21,8 @@ export class CollectionRoute extends CommonRoutesConfig {
             );
 
         this.app.route('/collections')
-            .get( collectionController.findCollections );
+            .get( passport.authenticate('jwt', { session: false }),
+                collectionController.findCollections );
 
         this.app.route('/collections/:id')
             .delete( collectionController.deleteCollection );

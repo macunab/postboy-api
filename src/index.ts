@@ -13,6 +13,7 @@ import { CommonRoutesConfig } from './helpers/commonRoutesConfig';
 import { CollectionRoute } from './routes/colletion.route';
 import { RequestRoute } from './routes/request.route';
 import { AuthRoute } from './routes/auth.route';
+import jwtStrategy from './helpers/jwtStrategy';
 
 DbConfig.connectDb(process.env.DB_CNN as string);
 
@@ -21,6 +22,7 @@ const app: Application = express();
 const routes: Array<CommonRoutesConfig> = [];
 // passport google strategy
 googleAuth.passportConf();
+jwtStrategy.verifyJwt();
 
 app.use(passport.initialize());
 app.use(helmet());
