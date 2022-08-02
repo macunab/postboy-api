@@ -20,6 +20,9 @@ class CollectionController {
     }
 
     async findCollections(req: Request, res: Response) {
+        // lint error but working
+        const {user} = req.user;
+        console.log(`EL USUARIO ES:::::: ${user.displayName}`);
         try {
             const collections = await collectionModel.getCollections();
             res.status(200).json({
