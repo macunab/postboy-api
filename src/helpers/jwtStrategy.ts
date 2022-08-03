@@ -1,6 +1,5 @@
 import passport from "passport";
 import passportJwt from 'passport-jwt';
-
 const JWTstrategy = passportJwt.Strategy;
 const extractJWT = passportJwt.ExtractJwt;
 
@@ -11,6 +10,7 @@ class JwtStrategy {
             jwtFromRequest: extractJWT.fromHeader('x-token')
         }, (token, done) => {
             try {
+                console.log(token.user);
                 return done(null, token);
             } catch(err) {
                 done(err);

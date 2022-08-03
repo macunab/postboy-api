@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
+import { Collection } from "../interfaces/collection.interface";
 import collectionModel from "../models/collection.model";
+import userModel from "../models/user.model";
 
 class CollectionController {
 
     async createCollection(req: Request, res: Response) {
-        const collection = req.body;
+        const collection: Collection = req.body;
+        // set the user for the collection
+        collection.user = req.user!.user;
         try {
-            await collectionModel.createCollection(collection)
+            await collectionModel.createCollection(collection);
             res.status(200).json({
                 ok: true,
                 msg: 'collection created successfully'
@@ -21,13 +25,16 @@ class CollectionController {
 
     async findCollections(req: Request, res: Response) {
         // lint error but working
-        const {user} = req.user;
-        console.log(`EL USUARIO ES:::::: ${user.displayName}`);
+        const user = req.user;
+        console.log(user!.user.name);
+
+        //console.log(`EL USUARIO ES:::::: ${req.params.username}`);
         try {
             const collections = await collectionModel.getCollections();
             res.status(200).json({
                 ok: true,
-                items: collections
+                items: collections,
+                user: req.user
             });
         } catch(err) {
             res.status(400).json({

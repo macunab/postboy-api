@@ -9,12 +9,16 @@ class CollectionModel {
             type: String,
             required: true
         },
+        user: {
+            type: this.schema.Types.ObjectId,
+            ref: 'User'
+        },
         requests: [{
             type: this.schema.Types.ObjectId,
             ref: 'Request'
         }]
     });
-    collectionDb = dbConfig.getMongoose().model('Collection', this.collectionSchema);
+    collectionDb = dbConfig.getMongoose().model<Collection>('Collection', this.collectionSchema);
     // get all collections
     async getCollections() {
         const collections = await this.collectionDb.find().populate('requests');

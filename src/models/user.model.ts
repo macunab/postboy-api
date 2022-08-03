@@ -4,7 +4,7 @@ import { User, UserDocument } from '../interfaces/user.interface';
 class UserModel {
     schema = dbConfig.getMongoose().Schema;
     constructor() {};
-    userSchema = new this.schema<UserDocument>({
+    userSchema = new this.schema({
         name: {
             type: String,
             required: true
@@ -25,6 +25,10 @@ class UserModel {
     }
     async findOneUser(googleId: string) {
         const user = await this.UserDb.findOne({ googleId: googleId });
+        return user;
+    }
+    async findById(id: string) {
+        const user = await this.UserDb.findById(id);
         return user;
     }
     async createUser(user: any) {

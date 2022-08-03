@@ -1,6 +1,7 @@
+import { Document, Types } from "mongoose"
 
-export interface Request {
-    _id?: string,
+export interface Request extends Document {
+    _id?: Types.ObjectId,
     name: string,
     url: string,
     type: string,

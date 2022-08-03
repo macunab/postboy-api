@@ -15,6 +15,7 @@ export class CollectionRoute extends CommonRoutesConfig {
         
         this.app.route('/collections/create')
             .post(
+                passport.authenticate('jwt', { session: false }),
                 check('name', 'name is required').not().isEmpty(),
                 validationFields.verifyFieldsErrors,
                 collectionController.createCollection

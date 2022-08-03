@@ -32,7 +32,7 @@ class RequestModel {
             value: String
         }]
     });
-    RequestDb = dbConfig.getMongoose().model('Request', this.requestSchema);
+    RequestDb = dbConfig.getMongoose().model<Request>('Request', this.requestSchema);
     // create request db method
     async createRequest(request: Request) {
         const newRequest = new this.RequestDb(request);

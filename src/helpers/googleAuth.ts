@@ -8,14 +8,13 @@ class GoogleAuth {
         const GoogleStrategy = passportGoogle.Strategy;
         const clientId = process.env.GOOGLE_CLIENT_ID as string;
         const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
-        console.log(`CLIENTID: ${clientId} || CLIENTESECRET: ${clientSecret}`);
         passport.serializeUser((user, done) => {
             done(null, user.id);
         });
         passport.deserializeUser(async(id: string, done) => {
-            console.log(`ID IN DESERIALIZEUSER: ${id}`);
             const user = await userModel.findOneUser(id);
-            done(null, { id: user!.googleId });
+            console.log(`El ID DEL DOCUMENTO ES: ${user?.id}`);
+            done(null, { id: user?.id });
         });
         passport.use('sign-in-google', new GoogleStrategy({
             clientID: clientId,
@@ -24,10 +23,10 @@ class GoogleAuth {
         },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                    console.log(profile);
+                   // console.log(profile);
                     const user = await userModel.findOneUser(profile.id);
                     if(user) {
-                        return done(null, profile);
+                        return done(null, user);
                     } else {
                         //create user and save...
                         const newUser = await userModel.createUser({
@@ -35,7 +34,7 @@ class GoogleAuth {
                             name: profile.displayName,
                             email: profile.emails?.[0].value
                         })
-                        done(null, profile);
+                        done(null, newUser);
                     }
                 } catch(err) {
                     console.log(err);

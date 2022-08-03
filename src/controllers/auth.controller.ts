@@ -6,7 +6,7 @@ class AuthController {
     createJwt(req: Request, res: Response) {
         const JWT_SECRET_KEY = process.env.JWT_SECRET as string;
         const user = req.user;
-        //console.log(`El usuario es: ${user!.displayName}`);
+        console.log(`El usuario es: ${user!.id}`);
         if(user) {
             const token = jwt.sign({user},
                 JWT_SECRET_KEY,
