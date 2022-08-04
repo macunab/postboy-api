@@ -7,8 +7,9 @@ class RequestController {
 
     async createRequest(req: Request, res: Response) {
         const request = req.body;
+        const { collection } = req.params;
         try {
-            await requestModel.createRequest(request);
+            await requestModel.createRequest(request, collection);
             res.status(200).json({
                 ok: true,
                 msg: 'Request create successfully'

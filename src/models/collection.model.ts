@@ -1,5 +1,6 @@
 import dbConfig from "../db/dbConfig";
 import { Collection } from "../interfaces/collection.interface";
+import { Request } from "../interfaces/request.interface";
 
 class CollectionModel {
     schema = dbConfig.getMongoose().Schema;
@@ -32,6 +33,10 @@ class CollectionModel {
     // delete collection. Todo: delete requests of collection
     async deleteCollection(id: string) {
         await this.collectionDb.deleteOne({ _id: id });
+    }
+    // push a request
+    async addRequest(id: string, request: Request) {
+        await this.collectionDb.findOneAndUpdate({ _id : id }, { $push: { requests: request }}, { new: true });
     }
 
 }

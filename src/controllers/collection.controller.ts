@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { Collection } from "../interfaces/collection.interface";
 import collectionModel from "../models/collection.model";
-import userModel from "../models/user.model";
 
 class CollectionController {
 
