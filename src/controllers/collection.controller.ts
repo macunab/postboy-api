@@ -26,8 +26,6 @@ class CollectionController {
         // lint error but working
         const user = req.user;
         console.log(user!.user.name);
-
-        //console.log(`EL USUARIO ES:::::: ${req.params.username}`);
         try {
             const collections = await collectionModel.getCollections();
             res.status(200).json({
