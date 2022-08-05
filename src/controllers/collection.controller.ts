@@ -23,11 +23,16 @@ class CollectionController {
     }
 
     async findCollections(req: Request, res: Response) {
-        // lint error but working
         const user = req.user;
         console.log(user!.user.name);
+        if(!user) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'user not authenticated'
+            });
+        }
         try {
-            const collections = await collectionModel.getCollections();
+            const collections = await collectionModel.getCollections(user!.user);
             res.status(200).json({
                 ok: true,
                 items: collections,

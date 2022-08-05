@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { request } from "http";
 import requestModel from "../models/request.model";
 
 
@@ -8,6 +7,7 @@ class RequestController {
     async createRequest(req: Request, res: Response) {
         const request = req.body;
         const { collection } = req.params;
+        request.owner = collection;
         try {
             await requestModel.createRequest(request, collection);
             res.status(200).json({
@@ -39,10 +39,18 @@ class RequestController {
         }
     }
 
+    // todo performance pre
     async deleteRequest(req: Request, res: Response) {
         const { id } = req.params;
         try {
-            await requestModel.deleteRequest(id);
+            const request = await requestModel.findOneRequest(id);
+            if(!request) {
+                return res.status(400).json({
+                    ok: false,
+                    msg: 'cant find request'
+                });
+            }
+            await requestModel.deleteRequest(request);
             res.status(200).json({
                 ok: true,
                 msg: 'Request delete successfully'

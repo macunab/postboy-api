@@ -1,8 +1,8 @@
-import { Types } from "mongoose";
+import { Document, Types } from "mongoose";
 import { Request } from "./request.interface";
 import { UserDocument } from "./user.interface";
 
-export interface Collection {
+export interface Collection{
     _id: Types.ObjectId;
     name: string,
     user: UserDocument,
