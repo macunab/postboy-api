@@ -24,8 +24,7 @@ class GoogleAuth {
         },
             async (accessToken, refreshToken, profile, done) => {
                 try {
-                   // console.log(profile);
-                    const user = await userModel.findById(profile.id);
+                    const user = await userModel.findOne({ googleId: profile.id });
                     if(user) {
                         return done(null, user);
                     } else {

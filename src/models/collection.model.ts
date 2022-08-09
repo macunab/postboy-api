@@ -11,6 +11,11 @@ const collectionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }, 
+},
+{
+    toJSON: {
+        virtuals: true
+    }
 });
 
 collectionSchema.virtual('requests', {
