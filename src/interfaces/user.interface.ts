@@ -15,3 +15,11 @@ export type UserDocument = Document & {
     googleId: string;
     password?: string
 }
+
+export interface IUser {
+    _id: string;
+    name: string;
+    email: string;
+    googleId: string;
+    password?: string;
+}

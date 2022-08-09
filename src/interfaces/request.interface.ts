@@ -2,7 +2,7 @@ import { Document, Types } from "mongoose"
 import { Collection } from "./collection.interface"
 
 export interface Request {
-    _id?: Types.ObjectId,
+    _id: Types.ObjectId,
     name: string,
     url: string,
     type: string,
@@ -12,6 +12,18 @@ export interface Request {
     xml?: string,
     formData?: [Pair],
     owner: Collection
+}
+
+export interface IRequest {
+    name: string;
+    url: string;
+    type: string;
+    headers?: [Pair];
+    queryParams?: [Pair];
+    json?: string;
+    xml?: string;
+    formData?: [Pair];
+    owner: Types.ObjectId;
 }
 
 export interface Pair {

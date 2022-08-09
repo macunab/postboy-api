@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
-import { Collection } from "../interfaces/collection.interface";
+import { ICollection } from "../interfaces/collection.interface";
 import collectionModel from "../models/collection.model";
 
 class CollectionController {
 
     async createCollection(req: Request, res: Response) {
-        const collection: Collection = req.body;
+        const collection: ICollection = req.body;
         // set the user for the collection
         collection.user = req.user!.user;
         try {
-            await collectionModel.createCollection(collection);
+            const collectionQuery = new collectionModel(collection);
+            await collectionQuery.save();
             res.status(200).json({
                 ok: true,
                 msg: 'collection created successfully'
@@ -32,7 +33,8 @@ class CollectionController {
             });
         }
         try {
-            const collections = await collectionModel.getCollections(user!.user);
+            //const collections = await collectionModel.getCollections(user!.user);
+            const collections = await collectionModel.find({ user: user.user});
             res.status(200).json({
                 ok: true,
                 items: collections,
@@ -49,7 +51,7 @@ class CollectionController {
     async deleteCollection(req: Request, res: Response) {
         const { id } = req.params;
         try {
-            await collectionModel.deleteCollection(id);
+            await collectionModel.deleteOne({ _id: id });
             res.status(200).json({
                 ok: true,
                 msg: 'Collection delete successfully'

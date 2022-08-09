@@ -1,8 +1,28 @@
-import dbConfig from "../db/dbConfig";
-import { Collection } from "../interfaces/collection.interface";
-import { Request } from "../interfaces/request.interface";
-import { UserDocument } from "../interfaces/user.interface";
+import { model, Schema } from "mongoose";
+import { Collection, ICollection } from '../interfaces/collection.interface';
 
+
+const collectionSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }, 
+});
+
+collectionSchema.virtual('requests', {
+    ref: 'Request',
+    localField: '_id',
+    foreignField: 'owner'
+});
+
+const collectionModel = model<ICollection & Document>('Collection', collectionSchema);
+
+export default collectionModel;
+/*
 class CollectionModel {
     schema = dbConfig.getMongoose().Schema;
     constructor() {};
@@ -15,38 +35,54 @@ class CollectionModel {
             type: this.schema.Types.ObjectId,
             ref: 'User'
         },
-        requests: [{
-            type: this.schema.Types.ObjectId,
-            ref: 'Request'
-        }]
+    },
+    {
+        toJSON: {
+            virtuals: true,
+            getters: true
+        }
+    }).virtual('requests', {
+        ref: 'Request',
+        localField: '_id',
+        foreignField: 'owner'
     });
-    collectionDb = dbConfig.getMongoose().model<Collection>('Collection', this.collectionSchema);
-    // get all collections
+
+    collectionDb = dbConfig.getMongoose().model<ICollection & Document>('Collection', this.collectionSchema);
     async getCollections(user: UserDocument) {
         const collections = await this.collectionDb.find({ user: user }).populate('requests');
         return collections;
     }
-    // create a collection
     async createCollection(collection: Collection) {
         const newCollection = new this.collectionDb(collection);
         await newCollection.save();
     }
-    // delete collection. Todo: delete requests of collection
     async deleteCollection(id: string) {
         await this.collectionDb.deleteOne({ _id: id });
     }
-    // push a request
     async addRequest(id: string, request: Request) {
-        await this.collectionDb.findOneAndUpdate({ _id : id }, { $push: { requests: request }}, { new: true });
+        await this.collectionDb.findOneAndUpdate({ _id : id },
+             { $push: { requests: request }}, { new: true });
     }
 
     async removeRequest(collection: Collection, request: Request) {
 
-        console.log(`collection: ${collection._id}, request: ${request}`);
-        await this.collectionDb.findOneAndUpdate({_id: collection._id},
-             {$pull: { requests: request}});
+        console.log(`request: ${request}`);
+        console.log(dbConfig.getMongoose().Types.ObjectId.isValid(collection._id));
+             const re = {
+                _id: request._id,
+             };
+             await this.collectionDb.updateOne(
+                { _id: collection._id },
+                {$pull: {requests: re }},
+                { new: true, upsert: true }
+             ).then(result => {
+                console.log(result);
+             })
+             .catch(err => {
+                console.log(err);
+             }); 
     }
 
 }
 
-export default new CollectionModel();
+export default new CollectionModel();*/
