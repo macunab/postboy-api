@@ -40,8 +40,6 @@ class RequestController {
         }
     }
 
-    // todo performance pre
-    // Probar mandando el id directo al metodo delete y el owner aparte
     async deleteRequest(req: Request, res: Response) {
         const { id } = req.params;
         try {
@@ -52,7 +50,7 @@ class RequestController {
                     msg: 'cant find request'
                 });
             }
-            await requestModel.deleteOne(id);
+            await requestModel.deleteOne({ _id: id });
             res.status(200).json({
                 ok: true,
                 msg: 'Request delete successfully'
@@ -61,6 +59,29 @@ class RequestController {
             res.status(400).json({
                 ok: false,
                 msg: `An error ocurred while trying delete a request, error: ${err}`
+            });
+        }
+    }
+
+    async findOneRequest(req: Request, res: Response) {
+        const { id } = req.params;
+        try {
+            const request = await requestModel.findById(id);
+            if(!request) {
+                return res.status(400).json({
+                   ok: false,
+                   msg: 'The request is not found' 
+                });
+            }
+            return res.status(200).json({
+                ok: true,
+                data: request,
+                msg: 'Request find successfully'
+            });
+        } catch(err) {
+            return res.status(400).json({
+                ok: false,
+                msg: `An error ocurred while trying find a request, error: ${err}`
             });
         }
     }

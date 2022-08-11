@@ -6,7 +6,6 @@ class CollectionController {
 
     async createCollection(req: Request, res: Response) {
         const collection: ICollection = req.body;
-        // set the user for the collection
         collection.user = req.user!.user;
         try {
             const collectionQuery = new collectionModel(collection);
@@ -33,11 +32,10 @@ class CollectionController {
             });
         }
         try {
-            //const collections = await collectionModel.getCollections(user!.user);
-            const collections = await collectionModel.find({ user: user.user});
+            const collections = await collectionModel.find({ user: user.user}).populate('requests');
             res.status(200).json({
                 ok: true,
-                items: collections,
+                data: collections,
                 user: req.user
             });
         } catch(err) {
@@ -48,6 +46,7 @@ class CollectionController {
         }
     }
 
+    // todo: delete ref requests
     async deleteCollection(req: Request, res: Response) {
         const { id } = req.params;
         try {

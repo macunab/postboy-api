@@ -15,7 +15,7 @@ export class RequestRoute extends CommonRoutesConfig {
     configureRoutes(): Application {
         this.app.route('/requests/:collection/create')
             .post(
-                
+                passport.authenticate('jwt', { session: false }),
                 check('name', 'the name is required').not().isEmpty(),
                 check('url', 'the url ir required').not().isEmpty(),
                 check('type', 'the type is required').not().isEmpty(),
@@ -26,14 +26,21 @@ export class RequestRoute extends CommonRoutesConfig {
                 .all((req: Request, res: Response, next: NextFunction) => {
                     next();
                 })
+                .get(
+                    passport.authenticate('jwt', { session: false }),
+                    requestController.findOneRequest
+                )
                 .put(
+                    passport.authenticate('jwt', { session: false }),
                     check('name', 'the name is required').not().isEmpty(),
                     check('url', 'the url ir required').not().isEmpty(),
                     check('type', 'the type is required').not().isEmpty(),
                     validationFields.verifyFieldsErrors,
                     requestController.updateRequest
                 )
-                .delete(requestController.deleteRequest)
+                .delete(
+                    passport.authenticate('jwt', { session: false }),
+                    requestController.deleteRequest)
         return this.app;
     }
 }

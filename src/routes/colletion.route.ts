@@ -26,7 +26,9 @@ export class CollectionRoute extends CommonRoutesConfig {
                 collectionController.findCollections );
 
         this.app.route('/collections/:id')
-            .delete( collectionController.deleteCollection );
+            .delete( 
+                passport.authenticate('jwt', { session: false }),
+                collectionController.deleteCollection );
 
         return this.app;
     }
