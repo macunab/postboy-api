@@ -24,19 +24,6 @@ class AuthController {
                 })
         }
     }
-
-    // todo express-session middleware
-    logout(req: Request, res: Response) {
-        req.logout(function(err) {
-            if(err) {
-                console.log(err);
-            }
-        });
-        res.status(200).json({
-            ok: true,
-            msg: 'Logout'
-        });
-    }
 }
 
 export default new AuthController();

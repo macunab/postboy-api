@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ICollection } from "../interfaces/collection.interface";
 import collectionModel from "../models/collection.model";
+import requestModel from "../models/request.model";
 
 class CollectionController {
 
@@ -46,11 +47,19 @@ class CollectionController {
         }
     }
 
-    // todo: delete ref requests
     async deleteCollection(req: Request, res: Response) {
         const { id } = req.params;
         try {
+            // delete collection
             await collectionModel.deleteOne({ _id: id });
+            // delete the requests from a collection
+            await requestModel.deleteMany({ owner: id })
+            .then(function(){
+                console.log('requests deleted');
+            })
+            .catch(function(err) {
+                console.log(`An error ocurred while trying delete the request of a collection, error: ${err}`);
+            });
             res.status(200).json({
                 ok: true,
                 msg: 'Collection delete successfully'

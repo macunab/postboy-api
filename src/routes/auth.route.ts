@@ -15,8 +15,8 @@ export class AuthRoute extends CommonRoutesConfig {
         this.app.route('/auth/google/callback')
             .get(passport.authenticate('sign-in-google', { session: false }),
                 authController.createJwt);    
-        this.app.route('/auth/logout')
-            .post(authController.logout);                
+       /* this.app.route('/auth/logout')
+            .post(authController.logout);     */           
         return this.app;
     }
 }
